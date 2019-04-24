@@ -1,0 +1,155 @@
+# This behat file contains config settings which are tuned for running behat
+# tests on a local dev environment.
+default:
+  suites:
+    default:
+      contexts:
+        - FeatureContext
+        - DrupalCustomContext
+        - PhpBrowserContext
+        - Drupal\DrupalExtension\Context\MessageContext
+        - Drupal\DrupalExtension\Context\MarkupContext
+      filters:
+        # Default profile calls all non-JS tests.
+        tags: "~@javascript"
+      screenshot_path: '%paths.base%/features/screenshots'
+      browser_width: 1280
+      browser_height: 720
+      # PhantomJS path in Linux: phantomjs
+      # PhantomJS path in Windows: C:\Users\staff\Downloads\phantomjs\bin\phantomjs.exe
+      phantomjs_path: phantomjs
+      # Chrome path in Linux: google-chrome
+      # Chrome path in Windows: "c:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+      chrome_path: google-chrome
+      # Run chrome in headless mode (true/false):
+      chrome_headless: false
+  extensions:
+    DMore\ChromeExtension\Behat\ServiceContainer\ChromeExtension: ~
+    Behat\MinkExtension:
+      ### Session definitions ###
+      sessions:
+        goutte:
+          ## Blackbox Driver ##
+          goutte:
+            guzzle_parameters:
+              verify: false
+        chromeremotedebug:
+          chrome:
+            api_url: http://127.0.0.1:9222
+            validate_certificate: false
+        phantomjs:
+          selenium2:
+            wd_host: http://127.0.0.1:8910
+      ### Choose a Javascript driver. ###
+      # Local options: chromeremotedebug, chromedriver, phantomjs
+      javascript_session: phantomjs
+      ### Choose a base url, such as: https://dev.sample.com ###
+      base_url: https://dev.sample.com
+    Drupal\DrupalExtension:
+      drush:
+        ### Choose the Drush Alias corresponding with the base url, ###
+        ### such as 'sample.dev'. ###
+        alias: 'sample.dev'
+      blackbox: ~
+      api_driver: 'drush'
+      region_map:
+        head: "head"
+        header: "header.page-header"
+        breadcrumb: "div.page-breadcrumb"
+        title: "div.l-title"
+        content: "div.l-content"
+        prefooter: "div.l-region.l-region--prefooter"
+        footer: "footer.l-footer"
+        left sidebar: "aside.l-region.l-region--sidebar-first"
+        right sidebar: "aside.l-region.l-region--sidebar-second"
+      selectors:
+        message_selector: '.messages'
+        error_message_selector: '.messages.messages--error'
+        success_message_selector: '.messages.status'
+        warning_message_selector: '.messages.warning'
+      text:
+        log_out: "Log out"
+        log_in: "edit-submit"
+        username_field: "edit-name"
+        password_field: "edit-pass"
+
+chrome:
+  suites:
+    default:
+      contexts:
+        - FeatureContext
+        - DrupalCustomContext
+        - DmoreChromeDriverContext
+        - Drupal\DrupalExtension\Context\MessageContext
+        - Drupal\DrupalExtension\Context\MarkupContext
+      chrome_useragent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
+      filters:
+        # Chrome profile calls all JS tags that are NOT flagged for mobile.
+        tags: "@javascript&&~@mobile"
+  extensions:
+    Behat\MinkExtension:
+      javascript_session: chromeremotedebug
+
+android:
+  suites:
+    default:
+      contexts:
+        - FeatureContext
+        - DrupalCustomContext
+        - DmoreChromeDriverContext
+        - Drupal\DrupalExtension\Context\MessageContext
+        - Drupal\DrupalExtension\Context\MarkupContext
+      # Android profile sets a browser useragent to steer the theme to mobile.
+      chrome_useragent: 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Mobile Safari/537.36'
+      browser_width: 360
+      browser_height: 640
+      filters:
+        # Android profile calls all JS tags that are NOT flagged for desktop.
+        tags: "@javascript&&~@desktop"
+  extensions:
+    Behat\MinkExtension:
+      javascript_session: chromeremotedebug
+
+desktop:
+  suites:
+    default:
+      contexts:
+        - FeatureContext
+        - DrupalCustomContext
+        - PhantomJsContext
+        - Drupal\DrupalExtension\Context\MessageContext
+        - Drupal\DrupalExtension\Context\MarkupContext
+      filters:
+        # Chrome profile calls all JS tags that are NOT flagged for mobile.
+        tags: "@javascript&&~@mobile&&~@nophantomjs"
+  extensions:
+    Behat\MinkExtension:
+      sessions:
+        phantomjs:
+          selenium2:
+            capabilities:
+              extra_capabilities:
+                phantomjs.page.settings.userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
+
+mobile:
+  suites:
+    default:
+      contexts:
+        - FeatureContext
+        - DrupalCustomContext
+        - PhantomJsContext
+        - Drupal\DrupalExtension\Context\MessageContext
+        - Drupal\DrupalExtension\Context\MarkupContext
+      browser_width: 360
+      browser_height: 640
+      filters:
+        # Android profile calls all JS tags that are NOT flagged for desktop.
+        tags: "@javascript&&~@desktop&&~@nophantomjs"
+  extensions:
+    Behat\MinkExtension:
+      sessions:
+        phantomjs:
+          selenium2:
+            capabilities:
+              extra_capabilities:
+                phantomjs.page.settings.userAgent: 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Mobile Safari/537.36'

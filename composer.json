@@ -1,0 +1,8 @@
+{
+    "require": {
+        "drupal/drupal-extension": "^3.4",
+        "drush-ops/behat-drush-endpoint": "^1.0",
+        "dmore/behat-chrome-extension": "^1.2",
+        "dmore/chrome-mink-driver": "^2.6"
+    }
+}
