@@ -7,8 +7,8 @@ for writing new Behat feature tests. This list can also be produced by running:
 ```gherkin
 default | [When|*] /^(?:|I )wait (\d+) seconds?$/
         | Wait a specified number of seconds.
-        | Adapted from:
-        | - https://michaelheap.com/behat-selenium2-webdriver-with-minkextension/
+        | Example: When I wait 1 second
+        | Example: And wait 2 seconds
         | at `FeatureContext::waitSeconds()`
 
 default | [Then|*] /^(?:|I )debug$/
@@ -150,29 +150,30 @@ default | [Given|*] /^(?:|I )set (?:|the )browser window size to (\d+)(?:| )x(?:
         | Example: Given I set the browser window size to 800 x 600
         | Example: And set the browser window size to 1280x720
         | Adapted from: http://www.devengineering.com/node/17
-        | at `JsBrowserContext::setBrowserWindowSizeToX()`
+        | at `DmoreChromeDriverContext::setBrowserWindowSizeToWxH()`
 
 default | [When|*] /^(?:|I )scroll (?:|the )(?<selector>[^"]*) "(?<locator>[^"]*)" into view$/
         | Scroll to a specific (link|button|field|element).
         | Example: Wen I scroll element "#swap-div" into view .
         | Adapted from: https://gist.github.com/MKorostoff/c94824a467ffa53f4fa9
-        | at `JsBrowserContext::scrollElemIntoView()`
+        | at `DmoreChromeDriverContext::scrollElemIntoView()`
 
 default | [When|*] /^(?:|I )scroll to the top$/
         | Scroll to top of page.
         | Adapted from: https://stackoverflow.com/questions/36647785
-        | at `JsBrowserContext::scrollToTop()`
+        | at `DmoreChromeDriverContext::scrollToTop()`
 
 default | [When|*] /^(?:|I )scroll to the bottom$/
         | Scroll to bottom of page.
         | Adapted from: https://stackoverflow.com/questions/42982950
-        | at `JsBrowserContext::scrollToBottom()`
+        | at `DmoreChromeDriverContext::scrollToBottom()`
 
 default | [When|*] /^(?:|I )hover over(?: the|) (?<selector>[^"]*) "(?<locator>[^"]*)"$/
         | Hover the mouse over (link|button|field|element).
-        | Example: When I hover over "Conditions"
+        | Example: When I hover over the link "Conditions"
+        | Example: And I hover over button "submit"
         | Adapted from: https://stackoverflow.com/questions/18499851
-        | at `JsBrowserContext::hoverOver()`
+        | at `DmoreChromeDriverContext::hoverOver()`
 
 default | [Then|*] /^(?:the |)(?<selector>[^"]*) "(?<locator>[^"]*)" should be visible$/
         | Checks, that (link|button|field|element) is visible in the DOM.
@@ -180,14 +181,14 @@ default | [Then|*] /^(?:the |)(?<selector>[^"]*) "(?<locator>[^"]*)" should be v
         | Example: Then the link "Chronic Pain" should be visible
         | Example: And element "#Illi" should be visible .
         | Adapted from: https://stackoverflow.com/questions/19669786
-        | at `JsBrowserContext::assertVisibleElement()`
+        | at `DmoreChromeDriverContext::assertVisibleElement()`
 
 default | [Then|*] /^(?:the |)(?<selector>[^"]*) "(?<locator>[^"]*)" should be hidden$/
         | Checks, that (link|button|field|element) is not visible in the DOM.
         | Note: "element" refers to a css element.
         | Example: Then the link "Chronic Pain" should be hidden
         | Example: And element "#Illi" should be hidden .
-        | at `JsBrowserContext::assertHiddenElement()`
+        | at `DmoreChromeDriverContext::assertHiddenElement()`
 
 default | [Then|*] /^(?:|the )viewport should contain(?: the|) (?<selector>[^"]*) "(?<locator>[^"]*)"$/
         | Checks, that (link|button|field|element) is rendered in browser viewport.
@@ -197,108 +198,154 @@ default | [Then|*] /^(?:|the )viewport should contain(?: the|) (?<selector>[^"]*
         |   - https://stackoverflow.com/questions/123999
         |   - https://alfrednutile.info/posts/37
         |   - https://stackoverflow.com/questions/25494456
-        | at `JsBrowserContext::assertViewportContainsElement()`
+        | at `DmoreChromeDriverContext::assertViewportContainsElement()`
 
 default | [Then|*] /^(?:|the )viewport should not contain(?: the|) (?<selector>[^"]*) "(?<locator>[^"]*)"$/
         | Checks, that (link|button|field|element) is not rendered in browser viewport.
         | Example: Then the viewport should not contain the element "#Illi"
         | Example: And the viewport should not contain button "Submit"
-        | at `JsBrowserContext::assertViewportNotContainsElement()`
+        | at `DmoreChromeDriverContext::assertViewportNotContainsElement()`
 
 default | [Then|*] /^take a screenshot$/
         | Take a screenshot.
-        | at `JsBrowserContext::assertScreenshot()`
+        | at `DmoreChromeDriverContext::assertScreenshot()`
 
-default | [Then|*] /^I (?:|should )see an advertisement of (width|height) "(\d+)(?:|px)" in the "(?<locator>[^"]*)"(?:| region)$/
-        | Assert advertisement is in a region and is rendered at a specific size.
-        | Example: Then I should see an advertisement of width "300" in the "right sidebar" region
-        | Example: And I see an advertisement of height "250px" in the "right sidebar"
-        | at `JsBrowserContext::assertGoogleAd()`
+default | [Then|*] /^I (?:|should )see (\d+) advertisement(?:|s) in the "(?<locator>[^"]*)"(?:| region)$/
+        | Assert a number of advertisements are in a region.
+        | Example: Then I should see 1 advertisement in the "right sidebar" region
+        | Example: And I see 2 advertisements in the "right sidebar"
+        | at `DmoreChromeDriverContext::assertGoogleAds()`
+
+default | [Then|*] /^I (?:|should )see (\d+) advertisement(?:|s) of (width|height) "(\d+)(?:|px)" in the "(?<locator>[^"]*)"(?:| region)$/
+        | Assert a number of advertisements are in a region at a specific size.
+        | Example: Then I should see 1 advertisement of height "200" in the "right sidebar" region
+        | Example: And I see 2 advertisements of width "300px" in the "right sidebar"
+        | at `DmoreChromeDriverContext::assertDimensionedGoogleAds()`
+
+default | [Then|*] /^(?:|the )JS property "(?<property>[^"]*)" should contain (?:|")(?<value>[^"]*)(?:|")$/
+        | Checks that JS object with specified property contains specified substring.
+        | Example: Then JS property "pbjs.adUnits[0].code" should contain "1006215"
+        | at `DmoreChromeDriverContext::assertJsPropertyContainsSubstring()`
 
 default | [Then|*] /^(?:|the )JS property "(?<property>[^"]*)" should (?:be set to|equal) (?:|")(?<value>[^"]*)(?:|")$/
         | Checks, that JS object with specified property equals specified value.
         | Example: Then the JS property "googletag.apiReady" should be set to "true"
         | Example: And JS property "PREBID_TIMEOUT" should equal "700"
-        | at `JsBrowserContext::assertJsPropertyEqualsValue()`
+        | at `DmoreChromeDriverContext::assertJsPropertyEqualsValue()`
 
 default | [Then|*] /^(?:|the )JS property "(?<property>[^"]*)" should not (?:be set to|equal) (?:|")(?<value>[^"]*)(?:|")$/
         | Checks, that JS property does not equal specified value.
         | Example: Then JS property "googletag.apiReady" should not be set to "true"
         | Example: And the JS property "PREBID_TIMEOUT" should not equal 700
-        | at `JsBrowserContext::assertJsPropertyNotEqualsValue()`
+        | at `DmoreChromeDriverContext::assertJsPropertyNotEqualsValue()`
 
 default | [Then|*] /^(?:|the )JS property "(?<property>[^"]*)" should be (greater|less) than (?:|")(?<value>[^"]*)(?:|")$/
         | Checks, that JS object with specified property greater/less than value.
         | Example: Then the JS property "PREBID_TIMEOUT" should be greater than 600
         | Example: And JS property "PREBID_TIMEOUT" should be less than "800"
-        | at `JsBrowserContext::assertJsPropertyGreaterOrLessThanValue()`
+        | at `DmoreChromeDriverContext::assertJsPropertyGreaterOrLessThanValue()`
+
+default | [When|*] /^(?:|I )follow "(?P<link>(?:[^"]|\\")*)"$/
+        | Clicks link with specified id|title|alt|text
+        | Example: When I follow "Log In"
+        | Example: And I follow "Log In"
+        | at `DmoreChromeDriverContext::clickLink()`
+
+default | [When|*] /^(?:|I )click the (\d+)(?:st|nd|rd|th) occurrence of "(?<link>[^"]*)"(?:| in the "(?<region>[^"]*)" region)$/
+        | Clicks the nth matching link, optionally filtered by a region.
+        | Example: When I click the 2nd occurrence of "Submit" in the "content" region
+        | Example: And click the 4th occurrence of "click here"
+        | 
+        | 
+        |   If region or text-based link within it cannot be found.
+        | at `DmoreChromeDriverContext::assertNthLinkFollow()`
+
+default | [Then|*] /^(?:|the )(?:|(\d+)(?:st|nd|rd|th) occurrence of )link "(?<link>[^"]*)"(?:| in the "(?<region>[^"]*)" region) should point to "(?<path>[^"]*)"$/
+        | Checks, that nth matching link points to a path, optionally filtered by region.
+        | Example: Then the link "Zimmer Biomet" should point to "cervicaldisc.com"
+        | Example: Then link "Herniated Disc" in the "content" region should point to "conditions/herniated-disc"
+        | Example: And the 2nd occurrence of link "Zimmer Biomet" should point to "https://www.cervicaldisc.com"
+        | 
+        | 
+        |   If region or text-based link within it cannot be found.
+        | at `DmoreChromeDriverContext::assertNthLinkPointsToPath()`
+
+default | [Then|*] /^the (?:|(\d+)(?:st|nd|rd|th) occurrence of )link "(?<link>[^"]*)"(?:| in the "(?<region>[^"]*)" region) should have tag "(?<tag>[^"]*)" set to "(?<value>[^"]*)"$/
+        | Checks, that nth matching link has html tag with specified value, optionally filtered by region.
+        | Example: Then the link "Zimmer Biomet" should have tag "rel" set to "nofollow"
+        | Example: And the 1st occurrence of link "Zimmer Biomet" should have tag "rel" set to "nofollow"
+        | Example: And the 2nd occurrence of link "Zimmer Biomet" in the "content" region should have tag "rel" set to "nofollow"
+        | 
+        | 
+        |   If region or text-based link within it cannot be found.
+        | at `DmoreChromeDriverContext::assertNthLinkHasTagValue()`
 
 default | [Given|*] I am at :path
         | Visit a given path, and additionally check for HTTP response code 200.
-        | at `JsBrowserContext::assertAtPath()`
+        | at `DmoreChromeDriverContext::assertAtPath()`
 
 default | [When|*] I visit :path
         | Visit a given path, and additionally check for HTTP response code 200.
-        | at `JsBrowserContext::assertAtPath()`
+        | at `DmoreChromeDriverContext::assertAtPath()`
 
 default | [When|*] I click :link
-        | at `JsBrowserContext::assertClick()`
+        | at `DmoreChromeDriverContext::assertClick()`
 
 default | [Given|*] for :field I enter :value
-        | at `JsBrowserContext::assertEnterField()`
+        | at `DmoreChromeDriverContext::assertEnterField()`
 
 default | [Given|*] I enter :value for :field
-        | at `JsBrowserContext::assertEnterField()`
+        | at `DmoreChromeDriverContext::assertEnterField()`
 
 default | [Given|*] I wait for AJAX to finish
         | Wait for AJAX to finish.
-        | at `JsBrowserContext::iWaitForAjaxToFinish()`
+        | at `DmoreChromeDriverContext::iWaitForAjaxToFinish()`
 
 default | [When|*] /^(?:|I )press "(?P<button>(?:[^"]|\\")*)"$/
         | Presses button with specified id|name|title|alt|value
         | Example: When I press "Log In"
         | Example: And I press "Log In"
-        | at `JsBrowserContext::pressButton()`
+        | at `DmoreChromeDriverContext::pressButton()`
 
 default | [When|*] I press the :button button
         | Presses button with specified id|name|title|alt|value.
-        | at `JsBrowserContext::pressButton()`
+        | at `DmoreChromeDriverContext::pressButton()`
 
 default | [Given|*] I press the :char key in the :field field
-        | at `JsBrowserContext::pressKey()`
+        | at `DmoreChromeDriverContext::pressKey()`
 
 default | [Then|*] I should see the link :link
-        | at `JsBrowserContext::assertLinkVisible()`
+        | at `DmoreChromeDriverContext::assertLinkVisible()`
 
 default | [Then|*] I should not see the link :link
         | Links are not loaded on the page.
-        | at `JsBrowserContext::assertNotLinkVisible()`
+        | at `DmoreChromeDriverContext::assertNotLinkVisible()`
 
 default | [Then|*] I should not visibly see the link :link
         | Links are loaded but not visually visible (e.g they have display: hidden applied).
-        | at `JsBrowserContext::assertNotLinkVisuallyVisible()`
+        | at `DmoreChromeDriverContext::assertNotLinkVisuallyVisible()`
 
 default | [Then|*] I (should )see the heading :heading
-        | at `JsBrowserContext::assertHeading()`
+        | at `DmoreChromeDriverContext::assertHeading()`
 
 default | [Then|*] I (should )not see the heading :heading
-        | at `JsBrowserContext::assertNotHeading()`
+        | at `DmoreChromeDriverContext::assertNotHeading()`
 
 default | [Then|*] I (should ) see the button :button
-        | at `JsBrowserContext::assertButton()`
+        | at `DmoreChromeDriverContext::assertButton()`
 
 default | [Then|*] I (should ) see the :button button
-        | at `JsBrowserContext::assertButton()`
+        | at `DmoreChromeDriverContext::assertButton()`
 
 default | [Then|*] I should not see the button :button
-        | at `JsBrowserContext::assertNotButton()`
+        | at `DmoreChromeDriverContext::assertNotButton()`
 
 default | [Then|*] I should not see the :button button
-        | at `JsBrowserContext::assertNotButton()`
+        | at `DmoreChromeDriverContext::assertNotButton()`
 
 default | [When|*] I follow/click :link in the :region( region)
         |   If region or link within it cannot be found.
-        | at `JsBrowserContext::assertRegionLinkFollow()`
+        | at `DmoreChromeDriverContext::assertRegionLinkFollow()`
 
 default | [Given|*] I press :button in the :region( region)
         | Checks, if a button with id|name|title|alt|value exists or not and pressess the same
@@ -309,7 +356,7 @@ default | [Given|*] I press :button in the :region( region)
         |   string The region in which the button should be pressed
         | 
         |   If region or button within it cannot be found.
-        | at `JsBrowserContext::assertRegionPressButton()`
+        | at `DmoreChromeDriverContext::assertRegionPressButton()`
 
 default | [Given|*] I fill in :value for :field in the :region( region)
         | Fills in a form field with id|name|title|alt|value in the specified region.
@@ -317,7 +364,7 @@ default | [Given|*] I fill in :value for :field in the :region( region)
         | 
         | 
         |   If region cannot be found.
-        | at `JsBrowserContext::regionFillField()`
+        | at `DmoreChromeDriverContext::regionFillField()`
 
 default | [Given|*] I fill in :field with :value in the :region( region)
         | Fills in a form field with id|name|title|alt|value in the specified region.
@@ -325,7 +372,7 @@ default | [Given|*] I fill in :field with :value in the :region( region)
         | 
         | 
         |   If region cannot be found.
-        | at `JsBrowserContext::regionFillField()`
+        | at `DmoreChromeDriverContext::regionFillField()`
 
 default | [Then|*] I should see the heading :heading in the :region( region)
         | Find a heading in a specific region.
@@ -333,7 +380,7 @@ default | [Then|*] I should see the heading :heading in the :region( region)
         | 
         | 
         |   If region or header within it cannot be found.
-        | at `JsBrowserContext::assertRegionHeading()`
+        | at `DmoreChromeDriverContext::assertRegionHeading()`
 
 default | [Then|*] I should see the :heading heading in the :region( region)
         | Find a heading in a specific region.
@@ -341,115 +388,109 @@ default | [Then|*] I should see the :heading heading in the :region( region)
         | 
         | 
         |   If region or header within it cannot be found.
-        | at `JsBrowserContext::assertRegionHeading()`
+        | at `DmoreChromeDriverContext::assertRegionHeading()`
 
 default | [Then|*] I should see the link :link in the :region( region)
         |   If region or link within it cannot be found.
-        | at `JsBrowserContext::assertLinkRegion()`
+        | at `DmoreChromeDriverContext::assertLinkRegion()`
 
 default | [Then|*] I should not see the link :link in the :region( region)
         |   If region or link within it cannot be found.
-        | at `JsBrowserContext::assertNotLinkRegion()`
+        | at `DmoreChromeDriverContext::assertNotLinkRegion()`
 
 default | [Then|*] I should see( the text) :text in the :region( region)
         |   If region or text within it cannot be found.
-        | at `JsBrowserContext::assertRegionText()`
+        | at `DmoreChromeDriverContext::assertRegionText()`
 
 default | [Then|*] I should not see( the text) :text in the :region( region)
         |   If region or text within it cannot be found.
-        | at `JsBrowserContext::assertNotRegionText()`
+        | at `DmoreChromeDriverContext::assertNotRegionText()`
 
 default | [Then|*] I (should )see the text :text
-        | at `JsBrowserContext::assertTextVisible()`
+        | at `DmoreChromeDriverContext::assertTextVisible()`
 
 default | [Then|*] I should not see the text :text
-        | at `JsBrowserContext::assertNotTextVisible()`
+        | at `DmoreChromeDriverContext::assertNotTextVisible()`
 
 default | [Then|*] I should get a :code HTTP response
-        | at `JsBrowserContext::assertHttpResponse()`
+        | at `DmoreChromeDriverContext::assertHttpResponse()`
 
 default | [Then|*] I should not get a :code HTTP response
-        | at `JsBrowserContext::assertNotHttpResponse()`
+        | at `DmoreChromeDriverContext::assertNotHttpResponse()`
 
 default | [Given|*] I check the box :checkbox
-        | at `JsBrowserContext::assertCheckBox()`
+        | at `DmoreChromeDriverContext::assertCheckBox()`
 
 default | [Given|*] I uncheck the box :checkbox
-        | at `JsBrowserContext::assertUncheckBox()`
+        | at `DmoreChromeDriverContext::assertUncheckBox()`
 
 default | [When|*] I select the radio button :label with the id :id
-        | at `JsBrowserContext::assertSelectRadioById()`
+        | at `DmoreChromeDriverContext::assertSelectRadioById()`
 
 default | [When|*] I select the radio button :label
-        | at `JsBrowserContext::assertSelectRadioById()`
+        | at `DmoreChromeDriverContext::assertSelectRadioById()`
 
 default | [Given|*] /^(?:|I )am on (?:|the )homepage$/
         | Opens homepage
         | Example: Given I am on "/"
         | Example: When I go to "/"
         | Example: And I go to "/"
-        | at `JsBrowserContext::iAmOnHomepage()`
+        | at `DmoreChromeDriverContext::iAmOnHomepage()`
 
 default | [When|*] /^(?:|I )go to (?:|the )homepage$/
         | Opens homepage
         | Example: Given I am on "/"
         | Example: When I go to "/"
         | Example: And I go to "/"
-        | at `JsBrowserContext::iAmOnHomepage()`
+        | at `DmoreChromeDriverContext::iAmOnHomepage()`
 
 default | [Given|*] /^(?:|I )am on "(?P<page>[^"]+)"$/
         | Opens specified page
         | Example: Given I am on "http://batman.com"
         | Example: And I am on "/articles/isBatmanBruceWayne"
         | Example: When I go to "/articles/isBatmanBruceWayne"
-        | at `JsBrowserContext::visit()`
+        | at `DmoreChromeDriverContext::visit()`
 
 default | [When|*] /^(?:|I )go to "(?P<page>[^"]+)"$/
         | Opens specified page
         | Example: Given I am on "http://batman.com"
         | Example: And I am on "/articles/isBatmanBruceWayne"
         | Example: When I go to "/articles/isBatmanBruceWayne"
-        | at `JsBrowserContext::visit()`
+        | at `DmoreChromeDriverContext::visit()`
 
 default | [When|*] /^(?:|I )reload the page$/
         | Reloads current page
         | Example: When I reload the page
         | Example: And I reload the page
-        | at `JsBrowserContext::reload()`
+        | at `DmoreChromeDriverContext::reload()`
 
 default | [When|*] /^(?:|I )move backward one page$/
         | Moves backward one page in history
         | Example: When I move backward one page
-        | at `JsBrowserContext::back()`
+        | at `DmoreChromeDriverContext::back()`
 
 default | [When|*] /^(?:|I )move forward one page$/
         | Moves forward one page in history
         | Example: And I move forward one page
-        | at `JsBrowserContext::forward()`
-
-default | [When|*] /^(?:|I )follow "(?P<link>(?:[^"]|\\")*)"$/
-        | Clicks link with specified id|title|alt|text
-        | Example: When I follow "Log In"
-        | Example: And I follow "Log In"
-        | at `JsBrowserContext::clickLink()`
+        | at `DmoreChromeDriverContext::forward()`
 
 default | [When|*] /^(?:|I )fill in "(?P<field>(?:[^"]|\\")*)" with "(?P<value>(?:[^"]|\\")*)"$/
         | Fills in form field with specified id|name|label|value
         | Example: When I fill in "username" with: "bwayne"
         | Example: And I fill in "bwayne" for "username"
-        | at `JsBrowserContext::fillField()`
+        | at `DmoreChromeDriverContext::fillField()`
 
 default | [When|*] /^(?:|I )fill in "(?P<field>(?:[^"]|\\")*)" with:$/
         | Fills in form field with specified id|name|label|value
         | Example: When I fill in "username" with: "bwayne"
         | Example: And I fill in "bwayne" for "username"
-        | at `JsBrowserContext::fillField()`
+        | at `DmoreChromeDriverContext::fillField()`
 
 default | [When|*] /^(?:|I )fill in "(?P<value>(?:[^"]|\\")*)" for "(?P<field>(?:[^"]|\\")*)"$/
         | Fills in form field with specified id|name|label|value
         | Example: When I fill in "username" with: "bwayne"
         | Example: And I fill in "bwayne" for "username"
-        | at `JsBrowserContext::fillField()`
+        | at `DmoreChromeDriverContext::fillField()`
 
 default | [When|*] /^(?:|I )fill in the following:$/
         | Fills in form fields with provided table
@@ -459,223 +500,223 @@ default | [When|*] /^(?:|I )fill in the following:$/
         | Example: And I fill in the following"
         |              | username | bruceWayne |
         |              | password | iLoveBats123 |
-        | at `JsBrowserContext::fillFields()`
+        | at `DmoreChromeDriverContext::fillFields()`
 
 default | [When|*] /^(?:|I )select "(?P<option>(?:[^"]|\\")*)" from "(?P<select>(?:[^"]|\\")*)"$/
         | Selects option in select field with specified id|name|label|value
         | Example: When I select "Bats" from "user_fears"
         | Example: And I select "Bats" from "user_fears"
-        | at `JsBrowserContext::selectOption()`
+        | at `DmoreChromeDriverContext::selectOption()`
 
 default | [When|*] /^(?:|I )additionally select "(?P<option>(?:[^"]|\\")*)" from "(?P<select>(?:[^"]|\\")*)"$/
         | Selects additional option in select field with specified id|name|label|value
         | Example: When I additionally select "Deceased" from "parents_alive_status"
         | Example: And I additionally select "Deceased" from "parents_alive_status"
-        | at `JsBrowserContext::additionallySelectOption()`
+        | at `DmoreChromeDriverContext::additionallySelectOption()`
 
 default | [When|*] /^(?:|I )check "(?P<option>(?:[^"]|\\")*)"$/
         | Checks checkbox with specified id|name|label|value
         | Example: When I check "Pearl Necklace"
         | Example: And I check "Pearl Necklace"
-        | at `JsBrowserContext::checkOption()`
+        | at `DmoreChromeDriverContext::checkOption()`
 
 default | [When|*] /^(?:|I )uncheck "(?P<option>(?:[^"]|\\")*)"$/
         | Unchecks checkbox with specified id|name|label|value
         | Example: When I uncheck "Broadway Plays"
         | Example: And I uncheck "Broadway Plays"
-        | at `JsBrowserContext::uncheckOption()`
+        | at `DmoreChromeDriverContext::uncheckOption()`
 
 default | [When|*] /^(?:|I )attach the file "(?P<path>[^"]*)" to "(?P<field>(?:[^"]|\\")*)"$/
         | Attaches file to field with specified id|name|label|value
         | Example: When I attach "bwayne_profile.png" to "profileImageUpload"
         | Example: And I attach "bwayne_profile.png" to "profileImageUpload"
-        | at `JsBrowserContext::attachFileToField()`
+        | at `DmoreChromeDriverContext::attachFileToField()`
 
 default | [Then|*] /^(?:|I )should be on "(?P<page>[^"]+)"$/
         | Checks, that current page PATH is equal to specified
         | Example: Then I should be on "/"
         | Example: And I should be on "/bats"
         | Example: And I should be on "http://google.com"
-        | at `JsBrowserContext::assertPageAddress()`
+        | at `DmoreChromeDriverContext::assertPageAddress()`
 
 default | [Then|*] /^(?:|I )should be on (?:|the )homepage$/
         | Checks, that current page is the homepage
         | Example: Then I should be on the homepage
         | Example: And I should be on the homepage
-        | at `JsBrowserContext::assertHomepage()`
+        | at `DmoreChromeDriverContext::assertHomepage()`
 
 default | [Then|*] /^the (?i)url(?-i) should match (?P<pattern>"(?:[^"]|\\")*")$/
         | Checks, that current page PATH matches regular expression
         | Example: Then the url should match "superman is dead"
         | Example: Then the uri should match "log in"
         | Example: And the url should match "log in"
-        | at `JsBrowserContext::assertUrlRegExp()`
+        | at `DmoreChromeDriverContext::assertUrlRegExp()`
 
 default | [Then|*] /^the response status code should be (?P<code>\d+)$/
         | Checks, that current page response status is equal to specified
         | Example: Then the response status code should be 200
         | Example: And the response status code should be 400
-        | at `JsBrowserContext::assertResponseStatus()`
+        | at `DmoreChromeDriverContext::assertResponseStatus()`
 
 default | [Then|*] /^the response status code should not be (?P<code>\d+)$/
         | Checks, that current page response status is not equal to specified
         | Example: Then the response status code should not be 501
         | Example: And the response status code should not be 404
-        | at `JsBrowserContext::assertResponseStatusIsNot()`
+        | at `DmoreChromeDriverContext::assertResponseStatusIsNot()`
 
 default | [Then|*] /^(?:|I )should see "(?P<text>(?:[^"]|\\")*)"$/
         | Checks, that page contains specified text
         | Example: Then I should see "Who is the Batman?"
         | Example: And I should see "Who is the Batman?"
-        | at `JsBrowserContext::assertPageContainsText()`
+        | at `DmoreChromeDriverContext::assertPageContainsText()`
 
 default | [Then|*] /^(?:|I )should not see "(?P<text>(?:[^"]|\\")*)"$/
         | Checks, that page doesn't contain specified text
         | Example: Then I should not see "Batman is Bruce Wayne"
         | Example: And I should not see "Batman is Bruce Wayne"
-        | at `JsBrowserContext::assertPageNotContainsText()`
+        | at `DmoreChromeDriverContext::assertPageNotContainsText()`
 
 default | [Then|*] /^(?:|I )should see text matching (?P<pattern>"(?:[^"]|\\")*")$/
         | Checks, that page contains text matching specified pattern
         | Example: Then I should see text matching "Batman, the vigilante"
         | Example: And I should not see "Batman, the vigilante"
-        | at `JsBrowserContext::assertPageMatchesText()`
+        | at `DmoreChromeDriverContext::assertPageMatchesText()`
 
 default | [Then|*] /^(?:|I )should not see text matching (?P<pattern>"(?:[^"]|\\")*")$/
         | Checks, that page doesn't contain text matching specified pattern
         | Example: Then I should see text matching "Bruce Wayne, the vigilante"
         | Example: And I should not see "Bruce Wayne, the vigilante"
-        | at `JsBrowserContext::assertPageNotMatchesText()`
+        | at `DmoreChromeDriverContext::assertPageNotMatchesText()`
 
 default | [Then|*] /^the response should contain "(?P<text>(?:[^"]|\\")*)"$/
         | Checks, that HTML response contains specified string
         | Example: Then the response should contain "Batman is the hero Gotham deserves."
         | Example: And the response should contain "Batman is the hero Gotham deserves."
-        | at `JsBrowserContext::assertResponseContains()`
+        | at `DmoreChromeDriverContext::assertResponseContains()`
 
 default | [Then|*] /^the response should not contain "(?P<text>(?:[^"]|\\")*)"$/
         | Checks, that HTML response doesn't contain specified string
         | Example: Then the response should not contain "Bruce Wayne is a billionaire, play-boy, vigilante."
         | Example: And the response should not contain "Bruce Wayne is a billionaire, play-boy, vigilante."
-        | at `JsBrowserContext::assertResponseNotContains()`
+        | at `DmoreChromeDriverContext::assertResponseNotContains()`
 
 default | [Then|*] /^(?:|I )should see "(?P<text>(?:[^"]|\\")*)" in the "(?P<element>[^"]*)" element$/
         | Checks, that element with specified CSS contains specified text
         | Example: Then I should see "Batman" in the "heroes_list" element
         | Example: And I should see "Batman" in the "heroes_list" element
-        | at `JsBrowserContext::assertElementContainsText()`
+        | at `DmoreChromeDriverContext::assertElementContainsText()`
 
 default | [Then|*] /^(?:|I )should not see "(?P<text>(?:[^"]|\\")*)" in the "(?P<element>[^"]*)" element$/
         | Checks, that element with specified CSS doesn't contain specified text
         | Example: Then I should not see "Bruce Wayne" in the "heroes_alter_egos" element
         | Example: And I should not see "Bruce Wayne" in the "heroes_alter_egos" element
-        | at `JsBrowserContext::assertElementNotContainsText()`
+        | at `DmoreChromeDriverContext::assertElementNotContainsText()`
 
 default | [Then|*] /^the "(?P<element>[^"]*)" element should contain "(?P<value>(?:[^"]|\\")*)"$/
         | Checks, that element with specified CSS contains specified HTML
         | Example: Then the "body" element should contain "style=\"color:black;\""
         | Example: And the "body" element should contain "style=\"color:black;\""
-        | at `JsBrowserContext::assertElementContains()`
+        | at `DmoreChromeDriverContext::assertElementContains()`
 
 default | [Then|*] /^the "(?P<element>[^"]*)" element should not contain "(?P<value>(?:[^"]|\\")*)"$/
         | Checks, that element with specified CSS doesn't contain specified HTML
         | Example: Then the "body" element should not contain "style=\"color:black;\""
         | Example: And the "body" element should not contain "style=\"color:black;\""
-        | at `JsBrowserContext::assertElementNotContains()`
+        | at `DmoreChromeDriverContext::assertElementNotContains()`
 
 default | [Then|*] /^(?:|I )should see an? "(?P<element>[^"]*)" element$/
         | Checks, that element with specified CSS exists on page
         | Example: Then I should see a "body" element
         | Example: And I should see a "body" element
-        | at `JsBrowserContext::assertElementOnPage()`
+        | at `DmoreChromeDriverContext::assertElementOnPage()`
 
 default | [Then|*] /^(?:|I )should not see an? "(?P<element>[^"]*)" element$/
         | Checks, that element with specified CSS doesn't exist on page
         | Example: Then I should not see a "canvas" element
         | Example: And I should not see a "canvas" element
-        | at `JsBrowserContext::assertElementNotOnPage()`
+        | at `DmoreChromeDriverContext::assertElementNotOnPage()`
 
 default | [Then|*] /^the "(?P<field>(?:[^"]|\\")*)" field should contain "(?P<value>(?:[^"]|\\")*)"$/
         | Checks, that form field with specified id|name|label|value has specified value
         | Example: Then the "username" field should contain "bwayne"
         | Example: And the "username" field should contain "bwayne"
-        | at `JsBrowserContext::assertFieldContains()`
+        | at `DmoreChromeDriverContext::assertFieldContains()`
 
 default | [Then|*] /^the "(?P<field>(?:[^"]|\\")*)" field should not contain "(?P<value>(?:[^"]|\\")*)"$/
         | Checks, that form field with specified id|name|label|value doesn't have specified value
         | Example: Then the "username" field should not contain "batman"
         | Example: And the "username" field should not contain "batman"
-        | at `JsBrowserContext::assertFieldNotContains()`
+        | at `DmoreChromeDriverContext::assertFieldNotContains()`
 
 default | [Then|*] /^(?:|I )should see (?P<num>\d+) "(?P<element>[^"]*)" elements?$/
         | Checks, that (?P<num>\d+) CSS elements exist on the page
         | Example: Then I should see 5 "div" elements
         | Example: And I should see 5 "div" elements
-        | at `JsBrowserContext::assertNumElements()`
+        | at `DmoreChromeDriverContext::assertNumElements()`
 
 default | [Then|*] /^the "(?P<checkbox>(?:[^"]|\\")*)" checkbox should be checked$/
         | Checks, that checkbox with specified id|name|label|value is checked
         | Example: Then the "remember_me" checkbox should be checked
         | Example: And the "remember_me" checkbox is checked
-        | at `JsBrowserContext::assertCheckboxChecked()`
+        | at `DmoreChromeDriverContext::assertCheckboxChecked()`
 
 default | [Then|*] /^the "(?P<checkbox>(?:[^"]|\\")*)" checkbox is checked$/
         | Checks, that checkbox with specified id|name|label|value is checked
         | Example: Then the "remember_me" checkbox should be checked
         | Example: And the "remember_me" checkbox is checked
-        | at `JsBrowserContext::assertCheckboxChecked()`
+        | at `DmoreChromeDriverContext::assertCheckboxChecked()`
 
 default | [Then|*] /^the checkbox "(?P<checkbox>(?:[^"]|\\")*)" (?:is|should be) checked$/
         | Checks, that checkbox with specified id|name|label|value is checked
         | Example: Then the "remember_me" checkbox should be checked
         | Example: And the "remember_me" checkbox is checked
-        | at `JsBrowserContext::assertCheckboxChecked()`
+        | at `DmoreChromeDriverContext::assertCheckboxChecked()`
 
 default | [Then|*] /^the "(?P<checkbox>(?:[^"]|\\")*)" checkbox should (?:be unchecked|not be checked)$/
         | Checks, that checkbox with specified id|name|label|value is unchecked
         | Example: Then the "newsletter" checkbox should be unchecked
         | Example: Then the "newsletter" checkbox should not be checked
         | Example: And the "newsletter" checkbox is unchecked
-        | at `JsBrowserContext::assertCheckboxNotChecked()`
+        | at `DmoreChromeDriverContext::assertCheckboxNotChecked()`
 
 default | [Then|*] /^the "(?P<checkbox>(?:[^"]|\\")*)" checkbox is (?:unchecked|not checked)$/
         | Checks, that checkbox with specified id|name|label|value is unchecked
         | Example: Then the "newsletter" checkbox should be unchecked
         | Example: Then the "newsletter" checkbox should not be checked
         | Example: And the "newsletter" checkbox is unchecked
-        | at `JsBrowserContext::assertCheckboxNotChecked()`
+        | at `DmoreChromeDriverContext::assertCheckboxNotChecked()`
 
 default | [Then|*] /^the checkbox "(?P<checkbox>(?:[^"]|\\")*)" should (?:be unchecked|not be checked)$/
         | Checks, that checkbox with specified id|name|label|value is unchecked
         | Example: Then the "newsletter" checkbox should be unchecked
         | Example: Then the "newsletter" checkbox should not be checked
         | Example: And the "newsletter" checkbox is unchecked
-        | at `JsBrowserContext::assertCheckboxNotChecked()`
+        | at `DmoreChromeDriverContext::assertCheckboxNotChecked()`
 
 default | [Then|*] /^the checkbox "(?P<checkbox>(?:[^"]|\\")*)" is (?:unchecked|not checked)$/
         | Checks, that checkbox with specified id|name|label|value is unchecked
         | Example: Then the "newsletter" checkbox should be unchecked
         | Example: Then the "newsletter" checkbox should not be checked
         | Example: And the "newsletter" checkbox is unchecked
-        | at `JsBrowserContext::assertCheckboxNotChecked()`
+        | at `DmoreChromeDriverContext::assertCheckboxNotChecked()`
 
 default | [Then|*] /^print current URL$/
         | Prints current URL to console.
         | Example: Then print current URL
         | Example: And print current URL
-        | at `JsBrowserContext::printCurrentUrl()`
+        | at `DmoreChromeDriverContext::printCurrentUrl()`
 
 default | [Then|*] /^print last response$/
         | Prints last response to console
         | Example: Then print last response
         | Example: And print last response
-        | at `JsBrowserContext::printLastResponse()`
+        | at `DmoreChromeDriverContext::printLastResponse()`
 
 default | [Then|*] /^show last response$/
         | Opens last response content in browser
         | Example: Then show last response
         | Example: And show last response
-        | at `JsBrowserContext::showLastResponse()`
+        | at `DmoreChromeDriverContext::showLastResponse()`
 
 default | [Then|*] I should see the error message( containing) :message
         | Checks if the current page contains the given error message

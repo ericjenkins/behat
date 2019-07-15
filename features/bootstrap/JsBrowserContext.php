@@ -353,20 +353,28 @@ JS;
   public function assertGoogleAds($num, $locator) {
     $regionObj = $this->getRegion($locator);
     // VH uses ".block-unicorn" class to identify ad block divs.
-    $adIframeElems = $regionObj->findAll('css', '.block-unicorn iframe');
+    $selector = '.block-unicorn .block__content > div > div';
+    $adIframeElems = $regionObj->findAll('css', $selector);
     if (!count($adIframeElems)) {
-      throw new ElementNotFoundException($this->getSession()->getDriver(), 'element', 'css', '.block-unicorn iframe');
+      throw new ElementNotFoundException($this->getSession()->getDriver(), $selector);
     }
-    elseif (count($adIframeElems) != $num) {
+
+    $adCount = 0;
+    foreach ($adIframeElems as $delta => $elem) {
+      if ($elem->isVisible()) {
+        $adCount++;
+      }
+    }
+
+    if ($adCount != $num) {
       $message = sprintf(
         'Found %s advertisement%s, but expected %s.',
-        count($adIframeElems),
-        count($adIframeElems) == 1 ? '' : 's',
+        $adCount,
+        $adCount == 1 ? '' : 's',
         $num
       );
       throw new ExpectationException($message, $this->getSession()->getDriver());
     }
-
   }
 
   /**
@@ -407,7 +415,6 @@ JS;
         throw new ExpectationException($message, $this->getSession()->getDriver());
       }
     }
-
   }
 
   /**

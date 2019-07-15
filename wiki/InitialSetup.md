@@ -47,9 +47,9 @@ Before proceeding with this setup guide, you will need the following tools:
     cp -R drush/* ~/.drush/
     # Check your installed drush version number.
     drush --version
-    # If you have drush v7:
+    # If you are testing Drupal 7:
     cp ~/.drush/behat-drush-endpoint/behat.d7.drush.inc ~/.drush/behat-drush-endpoint/behat.drush.inc
-    # If you have drush v8:
+    # If you are testing Drupal 8:
     cp ~/.drush/behat-drush-endpoint/behat.d8.drush.inc ~/.drush/behat-drush-endpoint/behat.drush.inc
     ```
 

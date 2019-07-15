@@ -8,6 +8,7 @@
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Element\NodeElement;
 
 /**
@@ -60,6 +61,39 @@ class PhantomJsContext extends JsBrowserContext implements SnippetAcceptingConte
     $script = "document.body.style.backgroundColor = 'white';";
     $this->getSession()->executeScript($script);
     parent::screenshot($fileName);
+  }
+
+  /**
+   * Checks, that (link|button|field|element) is rendered in browser viewport.
+   *
+   * Overrides JsBrowserContext::elemIsInViewport because PhantomJs does not
+   * suport this feature. PhantomJS has no viewport.
+   */
+  protected function elemIsInViewport(NodeElement $element) {
+    if ($element->isVisible()) {
+      echo "Note: The element is visible in the DOM, but PhantomJS does not use a viewport.";
+      return TRUE;
+    }
+
+    $message = sprintf('The element is hidden in the DOM.');
+
+    throw new ExpectationException($message, $this->getSession()->getDriver());
+
+  }
+
+  /**
+   * Checks, that (link|button|field|element) is not rendered in browser viewport.
+   *
+   * Overrides JsBrowserContext::assertViewportNotContainsElement() because
+   * PhantomJS has no viewport. If the element is visible, print a warning
+   * message that this test is not to be trusted.
+   */
+  public function assertViewportNotContainsElement($selector, $locator) {
+    if ($this->findElem($selector, $locator)->isVisible()) {
+      echo "Note: The $selector \"$locator\" is visible in the DOM, but ";
+      echo "PhantomJS does not use a viewport.";
+    }
+    return;
   }
 
 }

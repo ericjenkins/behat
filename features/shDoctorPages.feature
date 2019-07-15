@@ -7,10 +7,10 @@ Feature: Spine Center Directory
   Scenario: DEV-628 Assert presence of content on Dr. Wallach's page
     Given I am at "doctor/orthopedic-surgeon/corey-wallach-alexandria-va"
     Then I should see "Meet Dr. Corey J. Wallach, MD" in the "div.practice-about > h2" element
+    And I should see the link "verified-spine-health" in the content region
     And I should see "Orthopedic Surgeon" in the "div.practice-particulars" element
     And I should see "Acute Pain" in the "div.practice-conditions" element
     And I should see "Laminoplasty" in the "div.practice-treatments" element
-    #And I should see "I highly recommend Dr. Corey Wallach" in the "div.doctor-testimonials" element
     And I should see "Fellowship, University of California at Los Angeles" in the "div.doctor-accolades__distinctions" element
     And I should see "Board Certified, American Board of Orthopaedic Surgery" in the "div.doctor-accolades__certifications" element
 

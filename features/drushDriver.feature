@@ -1,4 +1,4 @@
-@api
+@api @nowarnings
 Feature: Drush driver
   In order to show functionality added by the Drush driver 
   As a developer

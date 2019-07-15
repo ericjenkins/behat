@@ -63,7 +63,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    * @Given /^(?:|I )(enable|disable|uninstall)(?: the|) module "(?P<module>[^"]*)"$/
    */
   public function alterDrupalModule($operation, $module) {
-    $this->getDriver()->drush('pm-' . $operation, [$module], ['yes' => NULL]);
+    $this->getDriver('drush')->drush('pm-' . $operation, [$module], ['yes' => NULL]);
   }
 
   /**
@@ -78,17 +78,17 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     if ($this->userManager->hasUsers()) {
       foreach ($this->userManager->getUsers() as $user) {
         /* Buggy method to bypass:
-         * $this->getDriver()->userDelete($user);
+         * $this->getDriver('drush')->userDelete($user);
          */
         $arguments = array(sprintf('"%s"', $user->name));
         $options = array(
           'yes' => NULL,
           /* 'delete-content' => NULL, */
         );
-        $this->getDriver()->drush('user-cancel', $arguments, $options);
+        $this->getDriver('drush')->drush('user-cancel', $arguments, $options);
         /* End bypass. */
       }
-      $this->getDriver()->processBatch();
+      $this->getDriver('drush')->processBatch();
       $this->userManager->clearUsers();
       if ($this->loggedIn()) {
         $this->logout();

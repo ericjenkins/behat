@@ -8,8 +8,10 @@
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Behat\Hook\Scope\AfterStepScope;
+use Behat\Behat\Hook\Scope\StepScope;
 use Drupal\DrupalExtension\Context\MinkContext;
 use Behat\Mink\Element\NodeElement;
+use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 
@@ -18,6 +20,11 @@ use Behat\Mink\Exception\UnsupportedDriverActionException;
  */
 class PhpBrowserContext extends MinkContext implements SnippetAcceptingContext {
 
+  /**
+   * Screenshot path.
+   *
+   * @var string
+   */
   protected $screenshotPath;
 
   /**
@@ -123,6 +130,32 @@ class PhpBrowserContext extends MinkContext implements SnippetAcceptingContext {
   }
 
   /**
+   * Clicks link with specified locator.
+   *
+   * Overriding MinkContext::clickLink() to add CSS selector-based
+   * elements as a fallback to id|title|alt|text.
+   *
+   * @param string $link
+   *   Link id, title, text, image alt, or css selector element.
+   *
+   * @throws ElementNotFoundException
+   */
+  public function clickLink($link) {
+    $link = $this->fixStepArgument($link);
+    $page = $this->getSession()->getPage();
+    $element = $page->findLink($link);
+
+    if (NULL === $element) {
+      $element = $page->find('css', $link);
+      if (NULL === $element) {
+        throw new ElementNotFoundException($this->getSession()->getDriver(), 'link', 'id|title|alt|text|element', $locator);
+      }
+    }
+
+    $element->click();
+  }
+
+  /**
    * Clicks the nth matching link, optionally filtered by a region.
    *
    * Example: When I click the 2nd occurrence of "Submit" in the "content" region
@@ -158,9 +191,10 @@ class PhpBrowserContext extends MinkContext implements SnippetAcceptingContext {
    * Checks, that nth matching link points to a path, optionally filtered by region.
    *
    * Example: Then the link "Zimmer Biomet" should point to "cervicaldisc.com"
+   * Example: Then link "Herniated Disc" in the "content" region should point to "conditions/herniated-disc"
    * Example: And the 2nd occurrence of link "Zimmer Biomet" should point to "https://www.cervicaldisc.com"
    *
-   * @Then /^the (?:|(\d+)(?:st|nd|rd|th) occurrence of )link "(?<link>[^"]*)"(?:| in the "(?<region>[^"]*)" region) should point to "(?<path>[^"]*)"$/
+   * @Then /^(?:|the )(?:|(\d+)(?:st|nd|rd|th) occurrence of )link "(?<link>[^"]*)"(?:| in the "(?<region>[^"]*)" region) should point to "(?<path>[^"]*)"$/
    *
    * @throws \Exception
    *   If region or text-based link within it cannot be found.
@@ -278,6 +312,30 @@ class PhpBrowserContext extends MinkContext implements SnippetAcceptingContext {
     catch (UnsupportedDriverActionException $e) {
       // Simply continue on, as this driver doesn't support HTTP response codes.
     }
+  }
+
+  /**
+   * Get the scenario object from BeforeStepScope & AfterStepScope objects.
+   *
+   * Adapted from:
+   * - https://github.com/Behat/Behat/issues/653/
+   */
+  protected function getScenario(StepScope $scope) {
+    $scenario = NULL;
+
+    $feature = $scope->getFeature();
+    $step = $scope->getStep();
+    $line = $step->getLine();
+
+    foreach ($feature->getScenarios() as $tmp) {
+      if ($tmp->getLine() > $line) {
+        break;
+      }
+
+      $scenario = $tmp;
+    }
+
+    return $scenario;
   }
 
 }

@@ -42,7 +42,16 @@ Scenario: Test the ability to find a heading in a region
 
 * The `@desktop` tag is configured by this project's `behat.yml` file to act as
   a filter which will only run when the `destkop` profile is specified as a
-  commandline directive.
+  commandline directive. Available JS browser tags include:
+  * `@desktop` - PhantomJS-based desktop browser
+  * `@mobile` - PhantomJS-based mobile browser
+  * `@chrome` - ChromeDriver-based desktop browser
+  * `@android` - ChromeDriver-based mobile browser
+
+When ChromeDriver is used to test Javascript-based features, Behat will
+additionally check for and report any JS console warnings and errors.
+* To ignore JS warnings, add the `@nojswarnings` tag.
+* To ignore all JS messages, add the `@nojserrors` tag.
 
 ## Drush
 
@@ -51,9 +60,16 @@ log into the site via ssh, bypassing the CAPTCHA prompt. This Drush driver can
 operate in tandem with either the non-graphical Blackbox driver or with the
 graphical Javascript driver.
 
+To use the Drush driver, add the `@api` tag to the Feature or Scenario
+defintion. In addition to activating Drush-based testing, the `@api` tag also
+activates Watchdog log monitoring.
+- To ignore Watchdog warnings and notices monitoring, add the `@nowarnings` tag.
+- To ignore all Watchdog messages, add the `@noerrors` tag.
+
 Example of a Drush-based feature test:
 
 ```gherkin
+@api @nowarnings  # Activate Drush API but ignore Watchdog warnings & notices.
 Scenario: Create and log in as a sub-admin
   Given I am logged in as a user with the "sub-admin" role
   When I am at "user"
